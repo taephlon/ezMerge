@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezMerge - The Modern Companion for Gentoo and Portage</title>
+  <meta name="description" content="Explore, search, and manage Gentoo overlays and packages effortlessly. ezMerge simplifies Portage without hiding its power.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="container navbar">
+      <div class="logo" id="brand-logo">
+        <span class="logo-prompt">&gt;_</span>
+        <span class="logo-text">ez<span class="highlight-purple">Merge</span></span>
+      </div>
+      <nav class="nav-links">
+        <a href="#packages-tab" class="active-nav-link" id="nav-packages">Packages</a>
+        <a href="#overlays-tab" id="nav-overlays">Overlays</a>
+        <a href="#docs-tab" id="nav-docs">Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1 class="hero-title">Gentoo, simplified—<br><span class="gradient-text">not simplified away.</span></h1>
+      <p class="hero-subtitle">Manage Portage overlays, resolve USE flags, and search packages through a beautiful CLI and web interface.</p>
+      <div class="cli-badge">
+        <span class="cli-cmd">emerge --noreplace ezmerge-cli</span>
+        <button class="copy-btn" id="btn-copy-install-cli" onclick="copyText('emerge --noreplace ezmerge-cli', 'btn-copy-install-cli')">Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <main class="container main-content">
+    
+    <!-- Packages Section -->
+    <div id="section-packages" class="workspace-section">
+      <div class="search-bar-container">
+        <input type="text" id="package-search-input" placeholder="Search packages (e.g. hyprland, obs-vkcapture, terminal)..." autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <div class="layout-grid">
+        <!-- Package List Column -->
+        <div class="package-list-col">
+          <h2 class="col-title">Available Packages</h2>
+
+          <div class="package-cards-list" id="package-list-container">
+            <!-- Loaded dynamically via JS -->
+            <div class="loading-spinner">Loading package database...</div>
+          </div>
+          <div id="pagination-container" class="hidden" style="margin-top: 15px; text-align: center;">
+            <button id="btn-show-more" style="background: rgba(126, 91, 239, 0.15); color: var(--text-main); border: 1px solid rgba(126, 91, 239, 0.4); width: 100%; padding: 10px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: var(--transition-smooth);">Show more packages</button>
+          </div>
+        </div>
+
+
+        <!-- Package Details Column -->
+        <div class="package-details-col">
+          <h2 class="col-title">Package Details</h2>
+          <div class="package-details-card" id="package-details-container">
+            <div class="empty-state">
+              <span class="empty-icon">📦</span>
+              <p>Select a package to view details, configure USE flags, see dependencies, and copy installation commands.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlays Section -->
+    <div id="section-overlays" class="workspace-section hidden">
+      <h2 class="section-title">Curated Overlay Index</h2>
+      <p class="section-desc">These overlays are cataloged with automated Trust Scores based on update freshness, maintainer count, and package verification status.</p>
+      
+      <div class="overlay-grid" id="overlays-container">
+        <!-- Loaded dynamically via JS -->
+      </div>
+    </div>
+
+    <!-- Docs Section -->
+    <div id="section-docs" class="workspace-section hidden">
+      <h2 class="section-title">ezMerge Ecosystem Documentation</h2>
+      
+      <div class="docs-layout">
+        <aside class="docs-sidebar">
+          <nav class="docs-nav">
+            <a href="#doc-introduction" class="doc-nav-item active-doc" onclick="switchDoc('intro')">Introduction</a>
+            <a href="#doc-installation" class="doc-nav-item" onclick="switchDoc('install')">Installation</a>
+            <a href="#doc-portage" class="doc-nav-item" onclick="switchDoc('portage')">Portage & ezMerge</a>
+            <a href="#doc-overlays" class="doc-nav-item" onclick="switchDoc('overlays')">Overlay Quality Standards</a>
+          </nav>
+        </aside>
+
+        <article class="docs-content" id="docs-content-container">
+          <!-- Intro doc by default -->
+          <div class="doc-panel" id="doc-panel-intro">
+            <h3>Welcome to ezMerge</h3>
+            <p>Gentoo Linux is renowned for its incredible flexibility and source-based optimization. However, managing third-party package repositories (known as <strong>overlays</strong>) is historically one of the most error-prone tasks for both beginners and seasoned administrators.</p>
+            <p>The ezMerge ecosystem bridges this gap by creating helper utilities and standard guidelines to make overlay package installation feel identical to pulling from Gentoo's official package repository.</p>
+            <h4>Core Architecture</h4>
+            <ul>
+              <li><strong>ezmerge-cli</strong>: A terminal-based assistant that automates overlay discovery, sync, keyword acceptances, and USE flag resolutions.</li>
+              <li><strong>ezmerge-overlay</strong>: Our own curated repository hosting stable ebuilds with automated quality checks.</li>
+              <li><strong>ezmerge-web</strong>: This package index portal, serving package details, metadata, and copyable install instructions.</li>
+            </ul>
+          </div>
+          
+          <div class="doc-panel hidden" id="doc-panel-install">
+            <h3>Installing ezmerge-cli</h3>
+            <p>ezMerge CLI is packaged inside our curated overlay, as well as distributed as a standalone Rust binary.</p>
+            
+            <h4>Method 1: From the ezmerge-overlay (Recommended)</h4>
+            <pre><code># Enable the ezmerge-overlay via eselect
+eselect repository enable ezmerge-overlay
+emaint sync -r ezmerge-overlay
+
+# Emerge the package assistant
+emerge --ask app-admin/ezmerge-cli</code></pre>
+            
+            <h4>Method 2: Cargo install (For developers)</h4>
+            <p>If you have Rust and Cargo configured on your Gentoo box, you can install the CLI tool directly from source:</p>
+            <pre><code>git clone https://github.com/ezmerge/ezMerge.git
+cd ezMerge/ezmerge-cli
+cargo install --path .</code></pre>
+          </div>
+
+          <div class="doc-panel hidden" id="doc-panel-portage">
+            <h3>How ezMerge Interacts with Portage</h3>
+            <p>ezMerge is designed as a <strong>companion</strong>, not a replacement. It respects the standard file layouts of Gentoo Portage and leaves your configuration in a completely valid, standard state.</p>
+            
+            <h4>Configuration Files Modified</h4>
+            <p>When you confirm an install with custom configurations, ezmerge-cli writes to specific, isolated config slices inside <code>/etc/portage/</code>:</p>
+            <ul>
+              <li><code>/etc/portage/package.use/ezmerge</code>: Custom USE flag entries.</li>
+              <li><code>/etc/portage/package.accept_keywords/ezmerge</code>: Unmasked testing keywords (e.g. <code>~amd64</code>).</li>
+            </ul>
+            <p>This layout ensures that you can undo or review all changes made by ezMerge simply by deleting these files or using <code>ezmerge undo</code>.</p>
+          </div>
+
+          <div class="doc-panel hidden" id="doc-panel-overlays">
+            <h3>Overlay Quality & Trust Scores</h3>
+            <p>To prevent users from breaking their systems with untrustworthy or broken overlays, ezMerge queries a curated database to compute a <strong>Trust Score</strong> (out of 5.0) for active overlays.</p>
+            <h4>Trust Score Criteria</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Signal</th>
+                  <th>Weight</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Recent Activity</td>
+                  <td>30%</td>
+                  <td>Overlays updated in the last 7 days receive high scores. Dead overlays are penalized.</td>
+                </tr>
+                <tr>
+                  <td>Maintainer count</td>
+                  <td>35%</td>
+                  <td>Collaborative repositories (like GURU) have multiple reviewers, lowering security and packaging risks.</td>
+                </tr>
+                <tr>
+                  <td>CI Build Status</td>
+                  <td>35%</td>
+                  <td>Overlays that run standard Gentoo validation (pkgcheck) and pass compilation tests.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 ezMerge Project. Making Gentoo elegant, fast, and accessible.</p>
+      <div class="footer-links">
+        <a href="https://github.com/ezmerge" target="_blank">GitHub</a>
+        <a href="https://gentoo.org" target="_blank">Gentoo Linux</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

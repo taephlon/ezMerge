@@ -1,0 +1,504 @@
+{
+  "overlays": [
+    {
+      "name": "gentoo",
+      "url": "https://github.com/gentoo/gentoo.git",
+      "trust_score": 5.0,
+      "packages_count": 22450,
+      "maintainers": 820,
+      "last_update": "32 minutes ago",
+      "description": "Official Gentoo Linux Portaging Tree. The core repository containing all stable and testing packages."
+    },
+    {
+      "name": "guru",
+      "url": "https://github.com/gentoo-mirror/guru.git",
+      "trust_score": 4.9,
+      "packages_count": 1842,
+      "maintainers": 120,
+      "last_update": "2 hours ago",
+      "description": "GURU is a collaborative Gentoo overlay managed by Gentoo users. Offers hundreds of modern user-submitted packages."
+    },
+    {
+      "name": "steam-overlay",
+      "url": "https://github.com/anyc/steam-overlay.git",
+      "trust_score": 4.8,
+      "packages_count": 125,
+      "maintainers": 8,
+      "last_update": "1 day ago",
+      "description": "Gentoo overlay for Steam, Steam client dependencies, Wine runners, and Steam games."
+    },
+    {
+      "name": "rust-overlay",
+      "url": "https://github.com/gentoo/rust.git",
+      "trust_score": 4.9,
+      "packages_count": 14,
+      "maintainers": 4,
+      "last_update": "3 days ago",
+      "description": "Ebuilds for rustup, rust nightly, Cargo plugins, and Rust development toolchains."
+    },
+    {
+      "name": "wayland-desktop",
+      "url": "https://github.com/gentoo-mirror/wayland-desktop.git",
+      "trust_score": 4.6,
+      "packages_count": 92,
+      "maintainers": 15,
+      "last_update": "12 hours ago",
+      "description": "Overlay for experimental Wayland desktop environment components, tiling compositors, and system bars."
+    },
+    {
+      "name": "science",
+      "url": "https://github.com/gentoo-mirror/science.git",
+      "trust_score": 4.9,
+      "packages_count": 680,
+      "maintainers": 45,
+      "last_update": "5 hours ago",
+      "description": "Official Gentoo Science overlay containing scientific packages, computational libraries, and academic tools."
+    },
+    {
+      "name": "gentoo-zh",
+      "url": "https://github.com/gentoo-mirror/gentoo-zh.git",
+      "trust_score": 4.7,
+      "packages_count": 410,
+      "maintainers": 22,
+      "last_update": "8 hours ago",
+      "description": "Gentoo Chinese community overlay containing localized applications, input methods, and productivity tools."
+    },
+    {
+      "name": "torbrowser",
+      "url": "https://github.com/gentoo-mirror/torbrowser.git",
+      "trust_score": 4.5,
+      "packages_count": 6,
+      "maintainers": 3,
+      "last_update": "4 days ago",
+      "description": "Dedicated overlay for installing and updating Tor Browser safely on Gentoo."
+    },
+    {
+      "name": "pentoo",
+      "url": "https://github.com/pentoo/pentoo-overlay.git",
+      "trust_score": 4.8,
+      "packages_count": 890,
+      "maintainers": 30,
+      "last_update": "1 day ago",
+      "description": "Pentoo penetration testing overlay containing specialized security audit tools and firmware packages."
+    }
+  ],
+  "packages": [
+    {
+      "name": "neovim",
+      "atom": "app-editors/neovim",
+      "version": "0.10.0",
+      "overlay": "gentoo",
+      "homepage": "https://neovim.io",
+      "description": "Vim-fork focused on extensibility and usability",
+      "license": "Apache-2.0",
+      "use_flags": [
+        { "name": "lua", "description": "Enable Lua programming support", "default": true },
+        { "name": "nvimpager", "description": "Install nvimpager pager symlink", "default": true }
+      ],
+      "keywords": ["amd64", "x86", "arm64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "dev-libs/libvterm",
+        "dev-lua/lpeg"
+      ]
+    },
+    {
+      "name": "zsh",
+      "atom": "app-shells/zsh",
+      "version": "5.9",
+      "overlay": "gentoo",
+      "homepage": "https://www.zsh.org/",
+      "description": "Advanced programmable command interpreter (shell)",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "mailspool", "description": "Enable mailspool scanning support", "default": false },
+        { "name": "gdbm", "description": "Enable gdbm database library support", "default": true }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "sys-libs/ncurses",
+        "sys-libs/gdbm"
+      ]
+    },
+    {
+      "name": "mpv",
+      "atom": "media-video/mpv",
+      "version": "0.38.0",
+      "overlay": "gentoo",
+      "homepage": "https://mpv.io/",
+      "description": "Media player for the command line supporting modern audio/video formats",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "lua", "description": "Enable user scripting via Lua", "default": true },
+        { "name": "vaapi", "description": "Enable VAAPI GPU hardware video acceleration", "default": true },
+        { "name": "pipewire", "description": "Enable Pipewire audio output support", "default": true }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-video/ffmpeg",
+        "media-libs/mesa"
+      ]
+    },
+    {
+      "name": "ffmpeg",
+      "atom": "media-video/ffmpeg",
+      "version": "6.1.1",
+      "overlay": "gentoo",
+      "homepage": "https://ffmpeg.org/",
+      "description": "Complete, cross-platform solution to record, convert and stream audio and video",
+      "license": "LGPL-2.1",
+      "use_flags": [
+        { "name": "x264", "description": "Enable H.264 video encoding support", "default": true },
+        { "name": "x265", "description": "Enable HEVC (H.265) video encoding support", "default": true },
+        { "name": "opus", "description": "Enable Opus audio codec support", "default": true }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-libs/alsa-lib"
+      ]
+    },
+    {
+      "name": "rust",
+      "atom": "dev-lang/rust",
+      "version": "1.79.0",
+      "overlay": "gentoo",
+      "homepage": "https://www.rust-lang.org/",
+      "description": "Systems programming language focused on safety, speed, and concurrency",
+      "license": "MIT",
+      "use_flags": [
+        { "name": "clippy", "description": "Install clippy static code analyzer", "default": true },
+        { "name": "system-bootstrap", "description": "Bootstrap compiler using system compiler", "default": false }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "sys-libs/zlib"
+      ]
+    },
+    {
+      "name": "portage",
+      "atom": "sys-apps/portage",
+      "version": "3.0.65",
+      "overlay": "gentoo",
+      "homepage": "https://wiki.gentoo.org/wiki/Project:Portage",
+      "description": "Portage is the package management system for Gentoo Linux",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "native-extensions", "description": "Compile C-extensions for performance optimization", "default": true }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "dev-lang/python"
+      ]
+    },
+    {
+      "name": "gentoo-sources",
+      "atom": "sys-kernel/gentoo-sources",
+      "version": "6.6.35",
+      "overlay": "gentoo",
+      "homepage": "https://dev.gentoo.org/~mpagano/genpatches",
+      "description": "Full sources including the Gentoo patchset for the Linux Kernel",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "symlink", "description": "Create or update /usr/src/linux symlink to new source folder", "default": true }
+      ],
+      "keywords": ["amd64", "x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": []
+    },
+    {
+      "name": "obs-vkcapture",
+      "atom": "media-video/obs-vkcapture",
+      "version": "1.5.0",
+      "overlay": "guru",
+      "homepage": "https://github.com/nowrep/obs-vkcapture",
+      "description": "OBS Studio Vulkan/OpenGL game capture wrapper",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "vulkan", "description": "Enable Vulkan game capture capability", "default": true },
+        { "name": "opengl", "description": "Enable OpenGL game capture capability", "default": true },
+        { "name": "screencast", "description": "Enable screencast support via Pipewire", "default": false }
+      ],
+      "keywords": ["~amd64", "~x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-video/obs-studio",
+        "media-libs/mesa",
+        "x11-libs/libX11"
+      ]
+    },
+    {
+      "name": "hyprland",
+      "atom": "gui-wm/hyprland",
+      "version": "0.41.2",
+      "overlay": "wayland-desktop",
+      "homepage": "https://hyprland.org",
+      "description": "A dynamic tiling Wayland compositor that doesn't sacrifice on looks",
+      "license": "BSD",
+      "use_flags": [
+        { "name": "X", "description": "Enable XWayland support for legacy X11 apps", "default": true },
+        { "name": "systemd", "description": "Use systemd socket activation and logind integration", "default": false },
+        { "name": "nvidia", "description": "Apply patches for better Nvidia proprietary driver compatibility", "default": false },
+        { "name": "screencast", "description": "Support screen sharing via pipewire/xdg-desktop-portal", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": true,
+      "mask_reason": "Experimental Wayland compositor undergoing rapid API changes, masked for testing",
+      "dependencies": [
+        "dev-libs/wayland",
+        "gui-libs/wlroots",
+        "media-libs/libinput",
+        "x11-base/xwayland"
+      ]
+    },
+    {
+      "name": "wezterm",
+      "atom": "x11-terms/wezterm",
+      "version": "20240203-110808",
+      "overlay": "rust-overlay",
+      "homepage": "https://wezfurlong.org/wezterm/",
+      "description": "A GPU-accelerated cross-platform terminal emulator written in Rust",
+      "license": "MIT",
+      "use_flags": [
+        { "name": "ssh", "description": "Enable built-in SSH client support", "default": true },
+        { "name": "kitty", "description": "Enable Kitty keyboard protocol support", "default": true }
+      ],
+      "keywords": ["~amd64", "~x86", "~arm64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-libs/fontconfig",
+        "x11-libs/libxcb",
+        "media-libs/harfbuzz"
+      ]
+    },
+    {
+      "name": "neovim-nightly",
+      "atom": "app-editors/neovim-nightly",
+      "version": "0.11.0_pre",
+      "overlay": "guru",
+      "homepage": "https://neovim.io",
+      "description": "Vim-fork focused on extensibility and usability (Nightly build)",
+      "license": "Apache-2.0",
+      "use_flags": [
+        { "name": "lua", "description": "Enable Lua programming support", "default": true },
+        { "name": "luajit", "description": "Use LuaJIT instead of standard Lua interpreter", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "dev-lua/mpack",
+        "dev-lua/lpeg",
+        "dev-libs/libvterm"
+      ]
+    },
+    {
+      "name": "discord-canary",
+      "atom": "net-im/discord-canary",
+      "version": "0.0.180",
+      "overlay": "steam-overlay",
+      "homepage": "https://discord.com",
+      "description": "All-in-one voice and text chat for gamers (Canary Release)",
+      "license": "Discord-EULA",
+      "use_flags": [
+        { "name": "pulseaudio", "description": "Enable PulseAudio sound daemon support", "default": true },
+        { "name": "alsa", "description": "Enable ALSA audio output support", "default": false }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "sys-apps/dbus",
+        "x11-libs/libXScrnSaver",
+        "media-libs/alsa-lib"
+      ]
+    },
+    {
+      "name": "proton-ge-custom-bin",
+      "atom": "app-emulation/proton-ge-custom-bin",
+      "version": "GE-Proton9-10",
+      "overlay": "steam-overlay",
+      "homepage": "https://github.com/GloriousEggroll/proton-ge-custom",
+      "description": "Compatibility tool for Steam Play based on Wine and additional patches (binary build)",
+      "license": "BSD",
+      "use_flags": [
+        { "name": "dxvk", "description": "Enable Vulkan-based translation for Direct3D 9/10/11", "default": true },
+        { "name": "vkd3d", "description": "Enable Vulkan-based translation for Direct3D 12", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-libs/vulkan-loader",
+        "virtual/wine"
+      ]
+    },
+    {
+      "name": "zen-browser-bin",
+      "atom": "www-client/zen-browser-bin",
+      "version": "1.0.0_beta12",
+      "overlay": "guru",
+      "homepage": "https://zen-browser.app",
+      "description": "A beautiful, privacy-focused browser built on top of Firefox with vertical tabs",
+      "license": "MPL-2.0",
+      "use_flags": [
+        { "name": "system-av1", "description": "Use system dav1d AV1 decoder instead of bundled one", "default": true },
+        { "name": "wayland", "description": "Enable native Wayland windowing support", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-libs/libpng",
+        "x11-libs/gtk+",
+        "media-libs/libvpx"
+      ]
+    },
+    {
+      "name": "torbrowser-launcher",
+      "atom": "www-client/torbrowser-launcher",
+      "version": "0.3.7",
+      "overlay": "torbrowser",
+      "homepage": "https://github.com/micahflee/torbrowser-launcher",
+      "description": "Downloads, cryptographically verifies, runs, and updates the Tor Browser Bundle",
+      "license": "MIT",
+      "use_flags": [
+        { "name": "signature", "description": "Verify cryptographic GPG signatures on downloads", "default": true }
+      ],
+      "keywords": ["~amd64", "~x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "app-crypt/gnupg",
+        "net-misc/tor"
+      ]
+    },
+    {
+      "name": "julia",
+      "atom": "dev-lang/julia",
+      "version": "1.10.4",
+      "overlay": "science",
+      "homepage": "https://julialang.org",
+      "description": "High-performance programming language designed for scientific computation",
+      "license": "MIT",
+      "use_flags": [
+        { "name": "system-llvm", "description": "Use system LLVM package instead of compiling a private copy", "default": false }
+      ],
+      "keywords": ["~amd64"],
+      "masked": true,
+      "mask_reason": "Contains experimental dependencies and requires custom LLVM patches",
+      "dependencies": [
+        "sys-devel/llvm",
+        "sci-libs/openblas"
+      ]
+    },
+    {
+      "name": "wps-office",
+      "atom": "app-office/wps-office",
+      "version": "11.1.0.11711",
+      "overlay": "gentoo-zh",
+      "homepage": "https://linux.wps.com",
+      "description": "WPS Office Suite for Linux - includes Writer, Presentation, and Spreadsheets",
+      "license": "WPS-Office-EULA",
+      "use_flags": [
+        { "name": "cups", "description": "Enable document printing via CUPS daemon", "default": true },
+        { "name": "fonts", "description": "Bundle core Microsoft-compatible office symbols and fonts", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "x11-libs/libXrender",
+        "media-libs/fontconfig"
+      ]
+    },
+    {
+      "name": "wifite",
+      "atom": "net-wireless/wifite",
+      "version": "2.7.0",
+      "overlay": "pentoo",
+      "homepage": "https://github.com/kimocoder/wifite2",
+      "description": "Python script to automate auditing of WEP, WPA, and WPS encrypted wireless networks",
+      "license": "GPL-2",
+      "use_flags": [
+        { "name": "pyrit", "description": "Enable pyrit cracker acceleration support", "default": false }
+      ],
+      "keywords": ["~amd64", "~x86"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "net-wireless/aircrack-ng"
+      ]
+    },
+    {
+      "name": "swww",
+      "atom": "gui-apps/swww",
+      "version": "0.9.5",
+      "overlay": "wayland-desktop",
+      "homepage": "https://github.com/L4ry/swww",
+      "description": "A light and fast Wayland wallpaper daemon with animated transitions",
+      "license": "GPL-3",
+      "use_flags": [
+        { "name": "lz4", "description": "Enable fast LZ4 texture caching support", "default": true }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "media-libs/libpng",
+        "app-arch/lz4"
+      ]
+    },
+    {
+      "name": "mullvad-vpn-bin",
+      "atom": "net-vpn/mullvad-vpn-bin",
+      "version": "2024.3",
+      "overlay": "guru",
+      "homepage": "https://mullvad.net",
+      "description": "Mullvad VPN client client daemon and desktop GUI interface (binary build)",
+      "license": "GPL-3",
+      "use_flags": [
+        { "name": "systemd", "description": "Enable systemd service integration", "default": false }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "net-misc/wireguard-tools",
+        "sys-apps/dbus"
+      ]
+    },
+    {
+      "name": "ollama",
+      "atom": "app-misc/ollama",
+      "version": "0.1.45",
+      "overlay": "guru",
+      "homepage": "https://ollama.com",
+      "description": "Run Large Language Models (LLMs) locally with GPU acceleration support",
+      "license": "MIT",
+      "use_flags": [
+        { "name": "cuda", "description": "Enable NVIDIA CUDA cores acceleration", "default": false }
+      ],
+      "keywords": ["~amd64"],
+      "masked": false,
+      "mask_reason": null,
+      "dependencies": [
+        "net-misc/curl",
+        "sys-libs/glibc"
+      ]
+    }
+  ]
+}
