@@ -18,30 +18,88 @@ The workspace is organized into a monorepo containing several interconnected com
 
 ---
 
+## ⚙️ Dependencies & System Requirements
+
+Before installing, please ensure your system meets the requirements:
+
+### Required Dependencies
+* **Rust & Cargo** (v1.80+): Required for compiling the `ezmerge-cli` binary from source.
+* **Unix-like Environment**: Standard `libc` interface (tested on Linux/Gentoo).
+
+### Optional / Integration Dependencies
+* **Gentoo Portage (`emerge` & `/etc/portage`)**: Required for live Gentoo overlay configuration, package unmasking, and package installation.
+  > [!NOTE]
+  > If `emerge` is not found, `ezMerge` automatically executes in a **mock/simulation mode**. This allows testing, development, and sandbox usage on non-Gentoo systems (e.g. Debian, Fedora, Arch).
+* **Python 3**: Required to run the local API & package search portal (`server.py`).
+* **`eselect-repository`**: Used to search and dynamically enable Gentoo overlays.
+
+### ⚠️ Conflict Warnings & Package Precautions
+* **Legacy `layman`**: `ezMerge` manages overlays via `eselect-repository` (`/etc/portage/repos.conf/`). If you use layman, we recommend migrating your overlays to eselect-repository to prevent profile/configuration conflicts.
+* **Root Permissions**: Running actual Portage merges and modifying configuration files under `/etc/portage` require root/sudo access. If run as a standard user, configuration changes are saved under the user directory (`~/.config/ezmerge/portage`) and a warning is displayed.
+
+---
+
+## 📥 Installation
+
+You can install `ezMerge` using the automated script or the `Makefile`.
+
+### Method 1: Automated Script (Recommended)
+Run the installer to check system dependencies, verify the Portage environment, check for conflicts, compile the binary, and choose global or local installation:
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+### Method 2: Makefile
+Alternatively, you can compile and install using standard `make` targets:
+```bash
+# Compile and build the release binary
+make
+
+# Install globally to /usr/local/bin (requires sudo)
+sudo make install
+
+# Uninstall from system
+sudo make uninstall
+
+# Run diagnostics
+make doctor
+
+# Clean build artifacts
+make clean
+```
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Build and Run the CLI (`ezmerge-cli`)
 
-Make sure you have Rust/Cargo installed, then compile and run the binary:
-
+If you installed via `install.sh` or `make install`, you can run the system-wide command:
 ```bash
-# Compile the workspace
-cargo build --release
-
 # Run diagnostics on your Portage environment
-./target/release/ezmerge doctor
+ezmerge doctor
 
 # Search for a package across standard overlays
-./target/release/ezmerge search obs
+ezmerge search obs
 
 # Show details, homepage, license, and USE flags for a package
-./target/release/ezmerge info hyprland
+ezmerge info hyprland
 
-# Interactively install a package (guides overlay add, keyword accept, and USE flag selection)
-./target/release/ezmerge install wezterm
+# Interactively install a package
+ezmerge install wezterm
 
 # Rollback any ezMerge-applied Portage config overrides
-./target/release/ezmerge undo
+ezmerge undo
+```
+
+Or you can run the locally built binary directly from the repo directory:
+```bash
+# Compile the workspace manually
+cargo build --release
+
+# Run locally
+./target/release/ezmerge-cli doctor
 ```
 
 ### 2. Launch the Package Search Portal (`ezmerge-web`)
@@ -49,9 +107,10 @@ cargo build --release
 To start the web server hosting the package lookup directory and API:
 
 ```bash
-# Run the local python web server
-python3 server.py
+# Run the local python web server or use 'make web'
+make web
 ```
+
 
 Now open **`http://localhost:8080`** in your browser. You can search for packages, toggle USE flags interactively, view active overlay ratings, and copy installation commands.
 
