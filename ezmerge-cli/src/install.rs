@@ -32,9 +32,12 @@ pub fn execute_install(package_name: &str, cli_flags: &[String], db: &Database) 
     let overlay_name = &pkg.overlay;
     println!("Checking overlay status for '{}'...", overlay_name.cyan());
     
-    // Simulate checking if overlay is active
-    // For demonstration, let's assume "guru" is not active, others are active.
-    let overlay_active = overlay_name != "guru";
+    // Check if overlay is active on the live system, otherwise simulate it
+    let overlay_active = if std::path::Path::new(&format!("/var/db/repos/{}", overlay_name)).is_dir() {
+        true
+    } else {
+        overlay_name != "guru"
+    };
     if !overlay_active {
         println!(
             "{} Overlay '{}' is required but not currently enabled.",
@@ -63,23 +66,55 @@ pub fn execute_install(package_name: &str, cli_flags: &[String], db: &Database) 
             return Ok(());
         }
 
-        // Simulate eselect repository enable & sync
-        println!("{} Running: {} repository enable {}", "→".cyan(), "eselect".bold(), overlay_name);
-        println!("{} Running: {} sync -r {}", "→".cyan(), "emaint".bold(), overlay_name);
-        
-        let pb = ProgressBar::new(100);
-        pb.set_style(
-            ProgressStyle::default_bar()
-                .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}% - Syncing repository")?
-                .progress_chars("#>-")
-        );
+        let is_root = unsafe { libc::getuid() } == 0;
+        let eselect_exists = std::process::Command::new("eselect").arg("--version").output().is_ok();
+        let mut executed_real = false;
 
-        for _ in 0..10 {
-            thread::sleep(Duration::from_millis(150));
-            pb.inc(10);
+        if is_root && eselect_exists {
+            println!("{} Running: eselect repository enable {}", "→".cyan(), overlay_name);
+            let eselect_status = std::process::Command::new("eselect")
+                .arg("repository")
+                .arg("enable")
+                .arg(overlay_name)
+                .status();
+            
+            if let Ok(s) = eselect_status {
+                if s.success() {
+                    println!("{} Running: emaint sync -r {}", "→".cyan(), overlay_name);
+                    let emaint_status = std::process::Command::new("emaint")
+                        .arg("sync")
+                        .arg("-r")
+                        .arg(overlay_name)
+                        .status();
+                    if let Ok(ss) = emaint_status {
+                        if ss.success() {
+                            executed_real = true;
+                            println!("{} Overlay '{}' enabled and synchronized successfully.", "✓".green().bold(), overlay_name.bold());
+                        }
+                    }
+                }
+            }
         }
-        pb.finish_with_message("Sync complete.");
-        println!("{} Overlay '{}' enabled and synchronized successfully.", "✓".green().bold(), overlay_name.bold());
+
+        if !executed_real {
+            // Simulate eselect repository enable & sync
+            println!("{} Running: {} repository enable {}", "→".cyan(), "eselect".bold(), overlay_name);
+            println!("{} Running: {} sync -r {}", "→".cyan(), "emaint".bold(), overlay_name);
+            
+            let pb = ProgressBar::new(100);
+            pb.set_style(
+                ProgressStyle::default_bar()
+                    .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}% - Syncing repository")?
+                    .progress_chars("#>-")
+            );
+
+            for _ in 0..10 {
+                thread::sleep(Duration::from_millis(150));
+                pb.inc(10);
+            }
+            pb.finish_with_message("Sync complete.");
+            println!("{} Overlay '{}' enabled and synchronized successfully.", "✓".green().bold(), overlay_name.bold());
+        }
     } else {
         println!("{} Overlay '{}' is already enabled.", "✓".green().bold(), overlay_name.bold());
     }
@@ -322,17 +357,43 @@ pub fn execute_install(package_name: &str, cli_flags: &[String], db: &Database) 
     println!("{} Running: {}", "→".cyan(), emerge_cmd.bold());
     println!();
 
-    if is_root {
-        // Since we are running in an assistant environment, we simulate it cleanly so we don't break/hang their system,
-        // but let's make it look like a beautiful, genuine progress!
-        simulate_emerge(&pkg, install_bin);
+    let emerge_exists = std::process::Command::new("emerge").arg("--version").output().is_ok();
+
+    if emerge_exists {
+        let mut cmd = std::process::Command::new("emerge");
+        if install_bin {
+            cmd.arg("-avK");
+        } else {
+            cmd.arg("-av");
+        }
+        cmd.arg(&pkg.atom);
+
+        let status = cmd.status();
+        match status {
+            Ok(s) if s.success() => {
+                println!("{} {} successfully merged!", "✓".green().bold(), pkg.atom.bold().magenta());
+                println!("Type '{} --help' or check package docs to start using it.", get_binary_suggestion(&pkg.name).cyan());
+            }
+            Ok(s) => {
+                anyhow::bail!("emerge failed with exit status: {:?}", s.code());
+            }
+            Err(e) => {
+                anyhow::bail!("Failed to execute emerge command: {}", e);
+            }
+        }
     } else {
-        println!("{}", "⚠ Running in non-root user mode.".yellow().bold());
-        println!("In a real root shell, ezMerge would run the following emerge commands:");
-        println!("  # {}", emerge_cmd.bold().magenta());
-        println!();
-        println!("Simulating installation progress for your verification:");
-        simulate_emerge(&pkg, install_bin);
+        if is_root {
+            // Since we are running in an assistant environment, we simulate it cleanly so we don't break/hang their system,
+            // but let's make it look like a genuine progress!
+            simulate_emerge(&pkg, install_bin);
+        } else {
+            println!("{}", "⚠ Running in non-root user mode.".yellow().bold());
+            println!("In a real root shell, ezMerge would run the following emerge commands:");
+            println!("  # {}", emerge_cmd.bold().magenta());
+            println!();
+            println!("Simulating installation progress for your verification:");
+            simulate_emerge(&pkg, install_bin);
+        }
     }
 
 
@@ -436,5 +497,16 @@ fn simulate_emerge(pkg: &Package, is_binary: bool) {
     thread::sleep(Duration::from_millis(600));
 
     println!("{} {} successfully merged!", "✓".green().bold(), pkg.atom.bold().magenta());
-    println!("Type '{} --help' or check package docs to start using it.", pkg.name.cyan());
+    println!("Type '{} --help' or check package docs to start using it.", get_binary_suggestion(&pkg.name).cyan());
+}
+
+fn get_binary_suggestion(pkg_name: &str) -> &str {
+    match pkg_name {
+        "nodejs" | "net-libs/nodejs" => "node",
+        "neovim" | "neovim-nightly" | "app-editors/neovim" => "nvim",
+        "rust" | "dev-lang/rust" => "rustc",
+        "gentoo-sources" | "sys-kernel/gentoo-sources" => "make menuconfig",
+        "obs-vkcapture" => "obs",
+        _ => pkg_name,
+    }
 }

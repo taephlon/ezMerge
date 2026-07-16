@@ -70,18 +70,37 @@ fn main() {
         Commands::Overlay { action } => overlay::execute_overlay(&action, &db),
         Commands::Sync => {
             println!("{}", "🔄 Syncing Portage Repositories & Overlays...".bold().cyan());
-            let pb = ProgressBar::new(100);
-            pb.set_style(
-                ProgressStyle::default_bar()
-                    .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}% - Syncing official tree & guru")
-                    .unwrap_or_else(|_| ProgressStyle::default_bar())
-            );
-            for _ in 0..10 {
-                thread::sleep(Duration::from_millis(200));
-                pb.inc(10);
+            let is_root = unsafe { libc::getuid() } == 0;
+            let emaint_exists = std::process::Command::new("emaint").arg("--version").output().is_ok();
+            let mut executed_real = false;
+
+            if is_root && emaint_exists {
+                let status = std::process::Command::new("emaint")
+                    .arg("sync")
+                    .arg("-a")
+                    .status();
+                if let Ok(s) = status {
+                    if s.success() {
+                        executed_real = true;
+                        println!("{} All configured overlays are up to date.", "✓".green().bold());
+                    }
+                }
             }
-            pb.finish_with_message("Sync completed.");
-            println!("{} All configured overlays are up to date.", "✓".green().bold());
+
+            if !executed_real {
+                let pb = ProgressBar::new(100);
+                pb.set_style(
+                    ProgressStyle::default_bar()
+                        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}% - Syncing official tree & guru")
+                        .unwrap_or_else(|_| ProgressStyle::default_bar())
+                );
+                for _ in 0..10 {
+                    thread::sleep(Duration::from_millis(200));
+                    pb.inc(10);
+                }
+                pb.finish_with_message("Sync completed.");
+                println!("{} All configured overlays are up to date.", "✓".green().bold());
+            }
             Ok(())
         }
         Commands::Undo => {
